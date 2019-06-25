@@ -22,14 +22,14 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
             ApiClient.getClient(headerMap)!!.callingPostRequest(url, jsonObject).apply {
                 enqueue(object : Callback<JsonObject> {
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        networkResponseListener!!.onFailureResponse(req, t.message)
+                        networkResponseListener.onFailureResponse(req, t.message)
                     }
 
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                         if (response.code() == 200) {
-                            networkResponseListener!!.onSuccessResponse(req, response.body().toString())
+                            networkResponseListener.onSuccessResponse(req, response.body().toString())
                         } else {
-                            networkResponseListener!!.onErrorResponse(req, response.errorBody().toString())
+                            networkResponseListener.onErrorResponse(req, response.errorBody().toString())
                         }
                     }
                 })
@@ -53,14 +53,14 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
             ApiClient.getClient(headerMap)!!.callingGetRequest(url).apply {
                 enqueue(object : Callback<JsonObject> {
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        networkResponseListener!!.onFailureResponse(req, t.message)
+                        networkResponseListener.onFailureResponse(req, t.message)
                     }
 
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                         if (response.code() == 200) {
-                            networkResponseListener!!.onSuccessResponse(req, response.body().toString())
+                            networkResponseListener.onSuccessResponse(req, response.body().toString())
                         } else {
-                            networkResponseListener!!.onErrorResponse(req, response.errorBody().toString())
+                            networkResponseListener.onErrorResponse(req, response.errorBody().toString())
                         }
                     }
                 })
@@ -85,14 +85,14 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
             ApiClient.getClient(headerMap)!!.callingPutRequest(url, jsonObject).apply {
                 enqueue(object : Callback<JsonObject> {
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        networkResponseListener!!.onFailureResponse(req, t.message)
+                        networkResponseListener.onFailureResponse(req, t.message)
                     }
 
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                         if (response.code() == 200) {
-                            networkResponseListener!!.onSuccessResponse(req, response.body().toString())
+                            networkResponseListener.onSuccessResponse(req, response.body().toString())
                         } else {
-                            networkResponseListener!!.onErrorResponse(req, response.errorBody().toString())
+                            networkResponseListener.onErrorResponse(req, response.errorBody().toString())
                         }
                     }
                 })
