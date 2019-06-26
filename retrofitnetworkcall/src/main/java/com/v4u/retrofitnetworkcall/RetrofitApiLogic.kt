@@ -15,7 +15,7 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
      * @param req is unique number for every url. Easy to bifurcate which context calling which url
      * @param url is api name
      * @param jsonObject for request parameter
-     * @param headerMap for custom header
+     * @param headerMap if you have to add your custom header then and only use this parameter
      */
     fun callingPostApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
         hashMapOf("Accept" to "application/json", "Content-Type" to "application/json")) {
@@ -47,7 +47,7 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
      * and return response using NetworkResponseListener
      * @param req is unique number for every url. Easy to bifurcate which context calling which url
      * @param url is api name
-     * @param headerMap for custom header
+     * @param headerMap if you have to add your custom header then and only use this parameter
      */
     fun callingGetApi(
         req: Int, url: String, headerMap: HashMap<String, String> = hashMapOf(
@@ -83,7 +83,7 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
      * @param req is unique number for every url. Easy to bifurcate which context calling which url
      * @param url is api name
      * @param jsonObject for request parameter
-     * @param headerMap for custom header
+     * @param headerMap if you have to add your custom header then and only use this parameter
      */
     fun callingPutApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
             hashMapOf("Accept" to "application/json", "Content-Type" to "application/json")) {
