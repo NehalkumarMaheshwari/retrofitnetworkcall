@@ -1,21 +1,23 @@
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+
 ext {
-    bintrayRepo = 'NetworkCall'
-    bintrayName = 'retrofitnetworkcall'
+    bintrayRepo = 'retrofitapicall'
+    bintrayName = 'apicalling'
 
     publishedGroupId = 'com.v4u'
-    libraryName = 'retrofitnetworkcall'
-    artifact = 'retrofitnetworkcall'
+    libraryName = 'apicalling'
+    artifact = 'apicalling'
 
     libraryDescription = 'Android library for displaying data based on JSON configuration fetched from server. This library supports PUT, POST, and GET method. It also handle success and failure of the responses.'
 
     siteUrl = 'https://github.com/NehalkumarMaheshwari/retrofitnetworkcall'
     gitUrl = 'https://github.com/NehalkumarMaheshwari/retrofitnetworkcall.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0'
 
     developerId = 'nehalkumarmaheshwari'
     developerName = 'Nehalkumar Maheshwari'
@@ -43,7 +45,7 @@ android {
         def CONFIG = { k -> "${project.properties.get(k)}" }
 
         debug {
-            buildConfigField "String", "BASE_URL", CONFIG("base_url")
+            buildConfigField "String", "BASE_URL", CONFIG("debug_url")
         }
 
         release {

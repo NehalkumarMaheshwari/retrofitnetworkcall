@@ -17,7 +17,8 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
      * @param jsonObject for request parameter
      * @param headerMap for custom header
      */
-    fun callingPostApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String>) {
+    fun callingPostApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
+        hashMapOf("Accept" to "application/json", "Content-Type" to "application/json")) {
         try {
             ApiClient.getClient(headerMap)!!.callingPostRequest(url, jsonObject).apply {
                 enqueue(object : Callback<JsonObject> {
@@ -48,7 +49,11 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
      * @param url is api name
      * @param headerMap for custom header
      */
-    fun callingGetApi(req: Int, url: String, headerMap: HashMap<String, String>) {
+    fun callingGetApi(
+        req: Int, url: String, headerMap: HashMap<String, String> = hashMapOf(
+            "Accept" to "application/json", "Content-Type" to "application/json"
+        )
+    ) {
         try {
             ApiClient.getClient(headerMap)!!.callingGetRequest(url).apply {
                 enqueue(object : Callback<JsonObject> {
@@ -80,7 +85,8 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
      * @param jsonObject for request parameter
      * @param headerMap for custom header
      */
-    fun callingPutApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String>) {
+    fun callingPutApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
+            hashMapOf("Accept" to "application/json", "Content-Type" to "application/json")) {
         try {
             ApiClient.getClient(headerMap)!!.callingPutRequest(url, jsonObject).apply {
                 enqueue(object : Callback<JsonObject> {

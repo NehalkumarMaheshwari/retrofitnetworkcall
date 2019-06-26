@@ -14,8 +14,7 @@ object ApiClient {
      * IRequestInterface is used for calling post and get api
      * @return IRequestInterface
      */
-    fun getClient(headerMap: HashMap<String, String> = hashMapOf("Accept" to "application/json",
-            "Content-Type" to "application/json")): IRequestInterface? {
+    fun getClient(headerMap: HashMap<String, String>): IRequestInterface? {
 
         if (requestInterface == null) {
             val httpClient = OkHttpClient.Builder()
