@@ -4,7 +4,7 @@ Android library for displaying data based on JSON configuration fetched from ser
 ## How to add the library
 
 ```
-implementation 'compile 'com.nehalkumar:apicalling:1.0'
+implementation 'compile 'com.nehalkumar:apicalling:1.1'
 ```
 ## Prerequisite
 You need to have the Gson and Retrofit dependecy already installed.
