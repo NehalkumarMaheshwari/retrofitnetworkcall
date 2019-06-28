@@ -14,4 +14,9 @@ interface IRequestInterface {
 
     @PUT
     fun callingPutRequest(@Url url: String, @Body request: JsonObject): Call<JsonObject>
+
+    @DELETE
+    fun callingDeleteRequest(@Url url: String, @Body request: JsonObject) : Call<JsonObject>
+
+
 }

@@ -54,6 +54,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        buildTypes.each {
+            it.buildConfigField "long", "CONNECT_TIMOUT", CONFIG("connect_timeout")
+            it.buildConfigField "long", "READ_TIMEOUT", CONFIG("read_timeout")
+        }
     }
 
     tasks.withType(Javadoc).all {
