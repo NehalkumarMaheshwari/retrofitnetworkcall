@@ -12,12 +12,12 @@ ext {
     libraryName = 'apicalling'
     artifact = 'apicalling'
 
-    libraryDescription = 'Android library for displaying data based on JSON configuration fetched from server. This library supports PUT, POST, and GET method. It also handle success and failure of the responses.'
+    libraryDescription = ' In this version have successfully implemented Delete, connect and read timeout functionalities.'
 
     siteUrl = 'https://github.com/NehalkumarMaheshwari/retrofitnetworkcall'
     gitUrl = 'https://github.com/NehalkumarMaheshwari/retrofitnetworkcall.git'
 
-    libraryVersion = '1.0'
+    libraryVersion = '1.1'
 
     developerId = 'nehalkumarmaheshwari'
     developerName = 'Nehalkumar Maheshwari'
