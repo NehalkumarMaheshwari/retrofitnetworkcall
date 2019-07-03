@@ -11,18 +11,24 @@ class MainActivity : AppCompatActivity(), NetworkResponseListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        /**
+         * Calling get api request
+         * Req is unique number for every url. Easy to bifurcate which context calling which url
+         * Url is api your name
+         * Last param is Hash map for header. If you have custom params for header then and only you have to add in method arguments.
+         */
         RetrofitApiLogic(this).callingGetApi(1,"URL")
     }
 
     override fun onSuccessResponse(req: Int, response: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("Fetch success response here according your req")
     }
 
     override fun onErrorResponse(req: Int, response: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("Fetch error response here according your req")
     }
 
     override fun onFailureResponse(req: Int, message: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("Fetch any failure here according your req")
     }
 }
