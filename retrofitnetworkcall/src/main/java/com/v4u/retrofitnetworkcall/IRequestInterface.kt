@@ -4,6 +4,10 @@ import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.*
 
+/**
+ * Created by Nehalkumar Maheshwari on 6/2/2019.
+ */
+
 interface IRequestInterface {
 
     @POST

@@ -7,30 +7,34 @@ import retrofit2.Response
 import java.io.IOException
 import java.util.*
 
+/**
+ * Created by Nehalkumar Maheshwari on 6/2/2019.
+ */
+
 class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListener) {
 
     /**
      * calling post api with request parameter
      * and return response using NetworkResponseListener
-     * @param req is unique number for every url. Easy to bifurcate which context calling which url
+     * @param apiName is your url name. Easy to bifurcate which context calling which url
      * @param url is api name
      * @param jsonObject for request parameter
      * @param headerMap if you have to add your custom header then and only use this parameter
      */
-    fun callingPostApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
+    fun callingPostApi(apiName: String, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
         hashMapOf("Accept" to "application/json", "Content-Type" to "application/json")) {
         try {
             ApiClient.getClient(headerMap)!!.callingPostRequest(url, jsonObject).apply {
                 enqueue(object : Callback<JsonObject> {
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        networkResponseListener.onFailureResponse(req, t.message)
+                        networkResponseListener.onFailureResponse(apiName, t.message)
                     }
 
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                         if (response.code() == 200) {
-                            networkResponseListener.onSuccessResponse(req, response.body().toString())
+                            networkResponseListener.onSuccessResponse(apiName, response.body().toString())
                         } else {
-                            networkResponseListener.onErrorResponse(req, response.errorBody().toString())
+                            networkResponseListener.onErrorResponse(apiName, response.errorBody().toString())
                         }
                     }
                 })
@@ -45,27 +49,24 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
     /**
      * calling get api
      * and return response using NetworkResponseListener
-     * @param req is unique number for every url. Easy to bifurcate which context calling which url
+     * @param apiName is your url name. Easy to bifurcate which context calling which url
      * @param url is api name
      * @param headerMap if you have to add your custom header then and only use this parameter
      */
-    fun callingGetApi(
-        req: Int, url: String, headerMap: HashMap<String, String> = hashMapOf(
-            "Accept" to "application/json", "Content-Type" to "application/json"
-        )
-    ) {
+    fun callingGetApi(apiName: String, url: String, headerMap: HashMap<String, String> = hashMapOf(
+            "Accept" to "application/json", "Content-Type" to "application/json")) {
         try {
             ApiClient.getClient(headerMap)!!.callingGetRequest(url).apply {
                 enqueue(object : Callback<JsonObject> {
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        networkResponseListener.onFailureResponse(req, t.message)
+                        networkResponseListener.onFailureResponse(apiName, t.message)
                     }
 
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                         if (response.code() == 200) {
-                            networkResponseListener.onSuccessResponse(req, response.body().toString())
+                            networkResponseListener.onSuccessResponse(apiName, response.body().toString())
                         } else {
-                            networkResponseListener.onErrorResponse(req, response.errorBody().toString())
+                            networkResponseListener.onErrorResponse(apiName, response.errorBody().toString())
                         }
                     }
                 })
@@ -80,25 +81,25 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
     /**
      * calling put api with request parameter
      * and return response using NetworkResponseListener
-     * @param req is unique number for every url. Easy to bifurcate which context calling which url
+     * @param apiName is your url name. Easy to bifurcate which context calling which url
      * @param url is api name
      * @param jsonObject for request parameter
      * @param headerMap if you have to add your custom header then and only use this parameter
      */
-    fun callingPutApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
+    fun callingPutApi(apiName: String, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
             hashMapOf("Accept" to "application/json", "Content-Type" to "application/json")) {
         try {
             ApiClient.getClient(headerMap)!!.callingPutRequest(url, jsonObject).apply {
                 enqueue(object : Callback<JsonObject> {
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        networkResponseListener.onFailureResponse(req, t.message)
+                        networkResponseListener.onFailureResponse(apiName, t.message)
                     }
 
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                         if (response.code() == 200) {
-                            networkResponseListener.onSuccessResponse(req, response.body().toString())
+                            networkResponseListener.onSuccessResponse(apiName, response.body().toString())
                         } else {
-                            networkResponseListener.onErrorResponse(req, response.errorBody().toString())
+                            networkResponseListener.onErrorResponse(apiName, response.errorBody().toString())
                         }
                     }
                 })
@@ -113,25 +114,25 @@ class RetrofitApiLogic(private val networkResponseListener: NetworkResponseListe
     /**
      * calling delete api with request parameter
      * and return response using NetworkResponseListener
-     * @param req is unique number for every url. Easy to bifurcate which context calling which url
+     * @param apiName is your url name. Easy to bifurcate which context calling which url
      * @param url is api name
      * @param jsonObject for request parameter
      * @param headerMap if you have to add your custom header then and only use this parameter
      */
-    fun callingDeleteApi(req: Int, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
+    fun callingDeleteApi(apiName: String, url: String, jsonObject: JsonObject, headerMap: HashMap<String, String> =
         hashMapOf("Accept" to "application/json", "Content-Type" to "application/json")) {
         try {
             ApiClient.getClient(headerMap)!!.callingDeleteRequest(url, jsonObject).apply {
                 enqueue(object : Callback<JsonObject> {
                     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        networkResponseListener.onFailureResponse(req, t.message)
+                        networkResponseListener.onFailureResponse(apiName, t.message)
                     }
 
                     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                         if (response.code() == 200) {
-                            networkResponseListener.onSuccessResponse(req, response.body().toString())
+                            networkResponseListener.onSuccessResponse(apiName, response.body().toString())
                         } else {
-                            networkResponseListener.onErrorResponse(req, response.errorBody().toString())
+                            networkResponseListener.onErrorResponse(apiName, response.errorBody().toString())
                         }
                     }
                 })

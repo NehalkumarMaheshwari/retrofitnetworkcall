@@ -6,6 +6,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+/**
+ * Created by Nehalkumar Maheshwari on 6/2/2019.
+ */
 
 object ApiClient {
     private var requestInterface: IRequestInterface? = null

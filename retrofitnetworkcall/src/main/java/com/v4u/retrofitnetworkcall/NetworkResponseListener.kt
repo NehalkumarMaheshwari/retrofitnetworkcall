@@ -1,7 +1,11 @@
 package com.v4u.retrofitnetworkcall
 
+/**
+ * Created by Nehalkumar Maheshwari on 6/2/2019.
+ */
+
 interface NetworkResponseListener {
-    fun onSuccessResponse(req: Int, response: String)
-    fun onErrorResponse(req: Int, response: String)
-    fun onFailureResponse(req: Int, message: String?)
+    fun onSuccessResponse(apiName: String, response: String)
+    fun onErrorResponse(apiName: String, response: String)
+    fun onFailureResponse(apiName: String, message: String?)
 }
