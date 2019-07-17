@@ -17,19 +17,22 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import java.text.DateFormat
+import com.google.android.material.snackbar.Snackbar
+import java.security.Key
 import java.text.DecimalFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.experimental.and
 import kotlin.math.floor
@@ -41,13 +44,36 @@ import kotlin.math.pow
  */
 
 /**
- * Display toast message on your screen
+ * Extension method to display toast message on your screen
  * @param text CharSequence: The text to show. Can be formatted text.
  * @param duration int: How long to display the message. Either LENGTH_SHORT or LENGTH_LONG
  */
 fun Context?.toast(text: CharSequence, duration: Int = Toast.LENGTH_LONG) =
     this?.let { Toast.makeText(it, text, duration).show() }
 
+/**
+ * Extension method to display snackbar on your screen
+ * For snackbar androidx add dependency "com.google.android.material:material:version"
+ * @param message String: The text to show. Can be formatted text.
+ * @param duration int: How long to display the message. Either LENGTH_SHORT or LENGTH_LONG
+ * @param function Unit: Set the action to be displayed and callback to be invoked when the action is clicked
+ */
+inline fun View.snack(message: String, duration: Int = Snackbar.LENGTH_LONG, function: Snackbar.() -> Unit) {
+    val snack = Snackbar.make(this, message, duration)
+    snack.function()
+    snack.show()
+}
+
+/**
+ * Snackbar set the action to be displayed
+ * @param action String: Text to display for the action
+ * @param color Int: Action color
+ * @param listener ClickListener: callback to be invoked when the action is clicked
+ */
+fun Snackbar.action(action: String, color: Int? = null, listener: (View) -> Unit) {
+    setAction(action, listener)
+    color?.let { setActionTextColor(ContextCompat.getColor(context, color)) }
+}
 
 /**
  * Check whether network is connected or not
@@ -89,19 +115,13 @@ fun Fragment.hideSoftKeyboard() {
 }
 
 /**
- * Extension method to get Date for String with specified format.
+ * Extension method to get formatted current date.
  * @param format date format. For example dd/MM/yyyy
- * @return Date specified format date
+ * @return String specified format string date
  */
-fun String.dateInFormat(format: String): Date? {
+fun currentDateInFormat(format: String): String? {
     val dateFormat = SimpleDateFormat(format, Locale.US)
-    var parsedDate: Date? = null
-    try {
-        parsedDate = dateFormat.parse(this)
-    } catch (ignored: ParseException) {
-        ignored.printStackTrace()
-    }
-    return parsedDate
+    return dateFormat.format(Date())
 }
 
 /**
@@ -167,10 +187,8 @@ fun String.isValidEmail(): Boolean {
  * @param maxLength Maximum length off password
  * @return boolean True if password is valid according user custom regex , false otherwise
  */
-fun String.isValidPassword(
-    forceLetter: Boolean, forceSpecialChar: Boolean, forceCapitalLetter: Boolean,
-    forceNumber: Boolean, minLength: Int, maxLength: Int
-): Boolean {
+fun String.isValidPassword(forceLetter: Boolean, forceSpecialChar: Boolean, forceCapitalLetter: Boolean,
+    forceNumber: Boolean, minLength: Int, maxLength: Int): Boolean {
 
     val patternBuilder = StringBuilder("^")
     val optionRegex = StringBuilder("[")
@@ -416,12 +434,19 @@ fun String.hexStringToByteArray(): ByteArray {
  *
  * @param key Use same key which you have used for encryption.
  * @param algorithm Use same algorithm  which you have used for encryption.
+ * @param initVector IV must be specified in CBC mode.
  * @return String The result of the decryption. It is recreated as a String object by the decrypted byteArray.
  * If the decryption fails, it will return null.
  */
-fun String.decrypt(key: SecretKeySpec, algorithm: String): String {
-    val cipher: Cipher = Cipher.getInstance(algorithm).apply { init(Cipher.DECRYPT_MODE, key) }
-    return String(cipher.doFinal(hexStringToByteArray()), Charsets.UTF_8)
+fun String.decrypt(key: Key, algorithm: String, initVector: Boolean): String {
+    val cipher: Cipher = Cipher.getInstance(algorithm).apply {
+        if (initVector) {
+            init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(16)))
+        } else {
+            init(Cipher.DECRYPT_MODE, key)
+        }
+    }
+    return String(cipher.doFinal(Base64.decode(this.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)))
 }
 
 /**
@@ -429,12 +454,81 @@ fun String.decrypt(key: SecretKeySpec, algorithm: String): String {
  *
  * @param key key.
  * @param algorithm algorithm.
+ * @param initVector IV must be specified in CBC mode
  * @return String The encrypted result will be converted from a byteArray to an array of hexadecimal representations.
  * If the encryption process fails, it will return null.
  */
-fun String.encrypt(key: SecretKeySpec, algorithm: String): String {
-    val cipher: Cipher = Cipher.getInstance(algorithm).apply { init(Cipher.ENCRYPT_MODE, key) }
-    return cipher.doFinal(this.toByteArray(Charsets.UTF_8)).byteArrayToHexString()
+fun String.encrypt(key: Key, algorithm: String, initVector: Boolean): String {
+    val cipher: Cipher = Cipher.getInstance(algorithm).apply {
+        if (initVector) {
+            init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(ByteArray(16)))
+        } else {
+            init(Cipher.ENCRYPT_MODE, key)
+        }
+    }
+    return Base64.encodeToString(cipher.doFinal(this.toByteArray(Charsets.UTF_8)), Base64.NO_WRAP)
+}
+
+/**
+ * Decrypt encoded text by AES-128-CBC algorithm
+ *
+ * @param secretKey 16 -characters secret password
+ * @return String The result of the decryption. It is recreated as a String object by the decrypted byteArray.
+ * If the decryption fails, it will return null.
+ */
+fun String.decryptAES128(secretKey: String): String {
+    if (secretKey.length == 16) {
+        val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
+        return this.decrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
+    } else {
+        throw Exception("Secret key's length must be 128")
+    }
+}
+
+/**
+ * Encrypt input text by AES-128-CBC algorithm
+ *
+ * @param secretKey 16 -characters secret password
+ * @return Encoded string or NULL if error
+ */
+fun String.encryptAES128(secretKey: String): String {
+    if (secretKey.length == 16) {
+        val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
+        return this.encrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
+    } else {
+        throw Exception("Secret key's length must be 128")
+    }
+}
+
+/**
+ * Decrypt encoded text by AES-256-CBC algorithm
+ *
+ * @param secretKey 32 -characters secret password
+ * @return String The result of the decryption. It is recreated as a String object by the decrypted byteArray.
+ * If the decryption fails, it will return null.
+ */
+fun String.decryptAES256(secretKey: String): String {
+    if (secretKey.length == 32) {
+        val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
+        return this.decrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
+    } else {
+        throw Exception("Secret key's length must be 256")
+    }
+}
+
+/**
+ * Encrypt input text by AES-256-CBC algorithm
+ *
+ * @param secretKey 32 -characters secret password
+ * @return Encoded string or NULL if error
+ */
+fun String.encryptAES256(secretKey: String): String {
+    if (secretKey.length == 32) {
+        val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
+        return this.encrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
+    } else {
+        throw Exception("Secret key's length must be 256")
+    }
 }
 
 /**
