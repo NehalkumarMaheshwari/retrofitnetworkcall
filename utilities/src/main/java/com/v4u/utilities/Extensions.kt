@@ -27,6 +27,8 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import java.security.Key
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -34,7 +36,6 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-import kotlin.experimental.and
 import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.pow
@@ -393,43 +394,6 @@ fun Context.share(title: String, msg: String, subject: String) {
 }
 
 /**
- * ByteArray is converted to a hexadecimal string
- *
- * @return String converted result
- */
-fun ByteArray.byteArrayToHexString(): String {
-    val sb = StringBuilder(this.size * 2)
-    for (b: Byte in this) {
-        val v: Int = (b and 0xff.toByte()).toInt()
-        if (v < 16) {
-            sb.append('0')
-        }
-        sb.append(Integer.toHexString(v))
-    }
-
-    return sb.toString().toUpperCase(Locale.getDefault())
-}
-
-/**
- * Convert a string in hexadecimal to a ByteArray
- *
- * @return ByteArray converted result
- */
-fun String.hexStringToByteArray(): ByteArray {
-    val length = this.length
-    val byteArray = ByteArray(length / 2)
-    var i = 0
-    while (i < length) {
-        // Two-digit set, representing a byte,
-        // restores the hexadecimal string thus represented to a ASCII byte
-        byteArray[i / 2] = (Character.digit(this[i], 16) shl 4 +
-                Character.digit(this[i + 1], 16)).toByte()
-        i += 2
-    }
-    return byteArray
-}
-
-/**
  *The string is decrypted according to the specified key and algorithm.
  *
  * @param key Use same key which you have used for encryption.
@@ -470,14 +434,14 @@ fun String.encrypt(key: Key, algorithm: String, initVector: Boolean): String {
 }
 
 /**
- * Decrypt encoded text by AES-128-CBC algorithm
+ * Decrypt encoded text by AES-128/256-CBC algorithm
  *
- * @param secretKey 16 -characters secret password
+ * @param secretKey 16/32 -characters secret password. 16 for 128 and 32 for 256 AES algorithm
  * @return String The result of the decryption. It is recreated as a String object by the decrypted byteArray.
  * If the decryption fails, it will return null.
  */
-fun String.decryptAES128(secretKey: String): String {
-    if (secretKey.length == 16) {
+fun String.decryptAES(secretKey: String): String {
+    if (secretKey.length == 16 || secretKey.length == 32) {
         val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
         return this.decrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
     } else {
@@ -486,48 +450,17 @@ fun String.decryptAES128(secretKey: String): String {
 }
 
 /**
- * Encrypt input text by AES-128-CBC algorithm
+ * Encrypt input text by AES-128/256-CBC algorithm
  *
- * @param secretKey 16 -characters secret password
+ * @param secretKey 16/32 -characters secret password. 16 for 128 and 32 for 256 AES algorithm
  * @return Encoded string or NULL if error
  */
-fun String.encryptAES128(secretKey: String): String {
-    if (secretKey.length == 16) {
+fun String.encryptAES(secretKey: String): String {
+    if (secretKey.length == 16 || secretKey.length == 32) {
         val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
         return this.encrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
     } else {
         throw Exception("Secret key's length must be 128")
-    }
-}
-
-/**
- * Decrypt encoded text by AES-256-CBC algorithm
- *
- * @param secretKey 32 -characters secret password
- * @return String The result of the decryption. It is recreated as a String object by the decrypted byteArray.
- * If the decryption fails, it will return null.
- */
-fun String.decryptAES256(secretKey: String): String {
-    if (secretKey.length == 32) {
-        val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
-        return this.decrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
-    } else {
-        throw Exception("Secret key's length must be 256")
-    }
-}
-
-/**
- * Encrypt input text by AES-256-CBC algorithm
- *
- * @param secretKey 32 -characters secret password
- * @return Encoded string or NULL if error
- */
-fun String.encryptAES256(secretKey: String): String {
-    if (secretKey.length == 32) {
-        val secretKeySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
-        return this.encrypt(secretKeySpec, "AES/CBC/PKCS5Padding", true)
-    } else {
-        throw Exception("Secret key's length must be 256")
     }
 }
 
@@ -551,4 +484,13 @@ fun Context.dip2px(dpValue: Float): Int {
 fun Context.px2dip(pxValue: Float): Int {
     val scale = this.resources.displayMetrics.density
     return (pxValue / scale + 0.5f).toInt()
+}
+
+/**
+ * Extension method to deserializes the specified Json into an object of the specified class.
+ * @param classOfT the class of T
+ * @return an object of type class of T from the string.
+ */
+fun <T> String.fromJson(classOfT:  Class<T> ): T {
+    return Gson().fromJson(this, classOfT)
 }

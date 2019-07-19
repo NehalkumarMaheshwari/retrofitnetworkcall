@@ -1,10 +1,8 @@
 package com.v4u.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.v4u.retrofitnetworkcall.NetworkResponseListener
-import com.v4u.retrofitnetworkcall.RetrofitApiLogic
-import com.v4u.utilities.isValidPassword
 
 class MainActivity : AppCompatActivity(), NetworkResponseListener {
 
@@ -12,14 +10,27 @@ class MainActivity : AppCompatActivity(), NetworkResponseListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        /* root.snack("Hello"){
+             action("Try"){
+                 this@MainActivity.toast("Done")
+             }
+         }*/
+
+
+        /*Log.v("Decrypted", "Decrypted String :- " +
+                "KoZAAxx/Yoi+Jfa3nkgY5Q==".decryptAES128("abcdefghijklmnop"))*/
+
+
         /**
          * Calling get api request
          * apiName is your url name. Easy to bifurcate which context calling which url
          * Url is api your name
          * Last param is Hash map for header. If you have custom params for header then and only you have to add in method arguments.
          */
-        RetrofitApiLogic(this).callingGetApi("Login","URL")
+        //RetrofitApiLogic(this).callingGetApi("Login","URL")
     }
+
+
 
     override fun onSuccessResponse(apiName: String, response: String) {
         TODO("Fetch success response here according your req")
