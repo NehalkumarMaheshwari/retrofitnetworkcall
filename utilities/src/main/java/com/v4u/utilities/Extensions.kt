@@ -165,8 +165,7 @@ inline val Context.displayHeight: Int
  * @return boolean true if string is Phone Number, false otherwise
  */
 fun String.isPhone(): Boolean {
-    val p = "^(?:(\\\\+)|(00))?[0-9]{6,14}\$".toRegex()
-    return matches(p)
+    return !TextUtils.isEmpty(this) && android.util.Patterns.PHONE.matcher(this).matches()
 }
 
 /**
@@ -189,7 +188,7 @@ fun String.isValidEmail(): Boolean {
  * @return boolean True if password is valid according user custom regex , false otherwise
  */
 fun String.isValidPassword(forceLetter: Boolean, forceSpecialChar: Boolean, forceCapitalLetter: Boolean,
-    forceNumber: Boolean, minLength: Int, maxLength: Int): Boolean {
+                           forceNumber: Boolean, minLength: Int, maxLength: Int): Boolean {
 
     val patternBuilder = StringBuilder("^")
     val optionRegex = StringBuilder("[")
@@ -346,7 +345,7 @@ fun Number.coolFormat(): String {
     val value = floor(log10(numValue.toDouble())).toInt()
     val base = value / 3
 
-    return if (value >= 3 && base < suffix.size) {
+    return if (value > 3 && base < suffix.size) {
         DecimalFormat("#0.00").format(numValue / 10.0.pow((base * 3.0))) + suffix[base]
     } else {
         DecimalFormat("#,##0").format(numValue)
