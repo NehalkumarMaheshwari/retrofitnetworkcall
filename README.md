@@ -216,12 +216,14 @@ Android library for displaying data based on JSON configuration fetched from ser
                 }
             }
             
-            override fun onErrorRhttp://gitlab.volansys.com/shrenik.shah/mobile_components/tree/NetworkManageresponse(apiName: String, response: String) {
+             override fun onErrorResponse(apiName: String, response: String) {
                 if(apiName.equals("UserDetail", true)){
                     // Handle error response here
                 }
             }
      ```
+     
+     
 
 **Utility Class**
 A common class to aid users in development of android project.
