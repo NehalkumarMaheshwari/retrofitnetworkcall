@@ -36,12 +36,10 @@ Android library for displaying data based on JSON configuration fetched from ser
             }
         }
     ```
-- add network module and Gson dependencyes in your gradle file(project level gradle file)
-     ```
-        implementation project(path: ':networkcall')
-        
+- add Gson dependencyes in your gradle file(project level gradle file)
+    ```
         implementation 'com.google.code.gson:gson:2.8.5'
-     ```
+    ```
 
 * [x]  Step for execution
 
